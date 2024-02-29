@@ -9,14 +9,14 @@ namespace Result
             Func<Command, Result<Problem, ValidatedCommand>> validate,
             Func<User, Result<Problem, Authorized>> authorize,
             Func<ValidatedCommand, Task<Result<Problem, Event[]>>> load,
-            Func<Event[], ValidatedCommand, AggregateRoot> action,
+            Func<Event[], ValidatedCommand, Authorized, AggregateRoot> action,
             Func<AggregateRoot, Task<Result<Problem, Event[]>>> persist)
         {
             return
                 from validatedCommand in validate(command)
                 from authorized in authorize(new User())
                 from history in load(validatedCommand)
-                let aggregateRoot = action(history, validatedCommand)
+                let aggregateRoot = action(history, validatedCommand, authorized)
                 from emitted in persist(aggregateRoot)
                 select new Success
                 {                    
@@ -31,7 +31,7 @@ namespace Result
                 request => new ValidatedCommand(),
                 command => new Authorized(),
                 async command => new Event[0],
-                (events, command) => new Booking(),
+                (events, command, authorized) => new Booking(),
                 async (booking) => new Event[0]);
 
             result.Fold(
@@ -47,7 +47,7 @@ namespace Result
                 request => new Problem(),
                 command => new Authorized(),
                 async command => new Event[0],
-                (events, command) => new Booking(),
+                (events, command, authorized) => new Booking(),
                 async (booking) => new Event[0]);
 
             result.Fold(
@@ -63,7 +63,7 @@ namespace Result
                 request => new ValidatedCommand(),
                 command => new Problem(),
                 async command => new Event[0],
-                (events, command) => new Booking(),
+                (events, command, authorized) => new Booking(),
                 async ( booking) => new Event[0]);
 
             result.Fold(
@@ -79,7 +79,7 @@ namespace Result
                 request => new ValidatedCommand(),
                 command => new Authorized(),
                 async command => new Problem(),
-                (events, command) => new Booking(),
+                (events, command, authorized) => new Booking(),
                 async (booking) => new Event[0]);
 
             result.Fold(
@@ -95,7 +95,7 @@ namespace Result
                 request => new ValidatedCommand(),
                 command => new Authorized(),
                 async command => new Event[0],
-                (events, command) => new Booking(),
+                (events, command, authorized) => new Booking(),
                 async (booking) => new Problem());
 
             result.Fold(
