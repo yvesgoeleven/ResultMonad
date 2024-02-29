@@ -1,0 +1,18 @@
+bin
+obj
+csx
+*ReSharper*
+*.user
+*.suo
+logs
+.vs/
+_yarn/
+_site/
+yarn.lock
+
+# NuGet packages
+packages*
+!repositories.config
+!packages.config
+build/build
+
