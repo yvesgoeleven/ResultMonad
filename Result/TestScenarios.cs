@@ -83,7 +83,7 @@ namespace Result
                 async (booking) => new Event[0]);
 
             result.Fold(
-               p => p.Should().NotBeNull(),
+               p => p.Should().BeOfType<Problem>(),
                s => s.Should().BeNull()
            );
         }
@@ -99,7 +99,7 @@ namespace Result
                 async (booking) => new Problem());
 
             result.Fold(
-               p => p.Should().NotBeNull(),
+               p => p.Should().BeOfType<Problem>(),
                s => s.Should().BeNull()
            );
         }       
